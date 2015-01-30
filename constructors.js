@@ -9,12 +9,21 @@
  * @property {number} cost
  * @property {string} description
  */
+function Spell (name, cost, description) {
 
+  // instance properties
+  this.name = name;
+  this.cost = cost;
+  this.description = description;
+}
   /**
    * Print out all spell details and format it nicely.
    * The format doesnt matter, as long as it contains the spell name, cost, and description.
    * @name printDetails
    */
+Spell.prototype.printDetails = function(name, cost, description) {
+  console.log( this.name + " " + this.cost + " " + this.description );
+};
 
 /**
  * A spell that deals damage.
@@ -40,12 +49,21 @@
  * @property {number} damage
  * @property {string} description
  */
-
+function DamageSpell ( name, cost, damage, description ) {
+  this.damage = damage;
+  // Call Super constructer <---- Damage Spell extends Spell
+  Spell.call(this, name, cost, description);
+}
+DamageSpell.prototype = Object.create(Spell.prototype, {
+  constructor : {
+    value : Spell
+  }
+ });
 /**
  * Now that you've created some spells, let's create
  * `Spellcaster` objects that can use them!
  *
- * @name Spellcaster
+ * @name Spellcaster - class!
  * @param {string} name         The spellcaster's name.
  * @param {number} health       The spellcaster's health points.
  * @param {number} mana         The spellcaster's mana points, used for casting spells.
@@ -54,7 +72,14 @@
  * @property {mana} mana
  * @property {boolean} isAlive  Default value should be `true`.
  */
-
+function Spellcaster (name, health, mana) {
+  // this. turns name into a property
+  this.name = name;
+  this.health = health;
+  this.mana = mana;
+  // isAlive is assigning it a default property
+  this.isAlive = true;
+}
   /**
    * The spellcaster loses health equal to `damage`.
    * Health should never be negative.
@@ -64,7 +89,8 @@
    * @name inflictDamage
    * @param  {number} damage  Amount of damage to deal to the spellcaster
    */
-
+   // var inflictDamage = new DamageSpell("damage");
+   // inflictDamage.
   /**
    * Reduces the spellcaster's mana by `cost`.
    * Mana should only be reduced only if there is enough mana to spend.
