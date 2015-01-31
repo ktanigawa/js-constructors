@@ -77,7 +77,7 @@ function Spellcaster (name, health, mana) {
   this.name = name;
   this.health = health;
   this.mana = mana;
-  // isAlive is assigning it a default property
+  // isAlive is assigning the Spellcaster a default property
   this.isAlive = true;
 }
   /**
@@ -89,8 +89,14 @@ function Spellcaster (name, health, mana) {
    * @name inflictDamage
    * @param  {number} damage  Amount of damage to deal to the spellcaster
    */
-   // var inflictDamage = new DamageSpell("damage");
-   // inflictDamage.
+Spellcaster.prototype.inflictDamage = function( damage ) {
+  // reassigning instance property a new value
+  this.health = this.health - damage; 
+  if (this.health <= 0) {
+    this.health = 0;
+    this.isAlive = false;
+  }
+};
   /**
    * Reduces the spellcaster's mana by `cost`.
    * Mana should only be reduced only if there is enough mana to spend.
@@ -99,7 +105,15 @@ function Spellcaster (name, health, mana) {
    * @param  {number} cost      The amount of mana to spend.
    * @return {boolean} success  Whether mana was successfully spent.
    */
-
+Spellcaster.prototype.spendMana = function( cost ) {
+  // if amount of mana is less then cost of mana then you can buy other powers
+  if (this.mana >= cost) {
+    this.mana = this.mana - cost;
+    return true;
+  } else {
+    return false;
+  }
+};
   /**
    * Allows the spellcaster to cast spells.
    * The first parameter should either be a `Spell` or `DamageSpell`.
@@ -125,3 +139,15 @@ function Spellcaster (name, health, mana) {
    * @param  {Spellcaster} target         The spell target to be inflicted.
    * @return {boolean}                    Whether the spell was successfully cast.
    */
+Spellcaster.prototype.invoke = function( spell, target ) {
+  if ( spell === undefined || spell === null) {
+    return false;
+  }
+  if (spell instanceof Spell) {
+    Spellcaster.spendMana( spell.cost );
+    return true;
+  }
+  if (spell instanceof DamageSpell) {
+    Spellcaster.inflictDamage( spell.damage );
+  }
+};
