@@ -140,14 +140,45 @@ Spellcaster.prototype.spendMana = function( cost ) {
    * @return {boolean}                    Whether the spell was successfully cast.
    */
 Spellcaster.prototype.invoke = function( spell, target ) {
+  // validation first Order of Operations
   if ( spell === undefined || spell === null) {
     return false;
   }
-  if (spell instanceof Spell) {
-    Spellcaster.spendMana( spell.cost );
-    return true;
+
+  // if these two conditions are met are true than return false
+  if (spell instanceof DamageSpell && target === undefined) {
+   return false;
   }
-  if (spell instanceof DamageSpell) {
-    Spellcaster.inflictDamage( spell.damage );
+
+  // spell is casted when there is no target & spell is part of the Spell class and both 
+  // has to be true to cntinue the ifblock
+  if (spell instanceof Spell && target === undefined) {
+    // the results of calling the spendMana method gets stored in the castSpell variable
+    // if the result in the castSpell variable is true, it takes away mana and returns true. 
+    // Else it returns false.
+    var castSpell = this.spendMana( spell.cost );
+    //console.log(castSpell);
+    if (castSpell === true) {
+        return true;
+    } else {
+        return false;
+    }
   }
+
+  // if the spell is a damage spell and the target is a Spellcaster prototype 
+  if (spell instanceof DamageSpell && target instanceof Spellcaster){
+    // if the mana is spent it uses the cost parameters in the spell argumemt of the spendMana method
+    if (this.spendMana( spell.cost )){
+      // Parameter/Argument that gets inflicted onto target
+      target.inflictDamage( spell.damage );
+      return true;
+    } else {
+      return false;
+    }
+  } else {
+    return false;
+  }
+
+ 
+
 };
